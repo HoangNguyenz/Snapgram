@@ -1,27 +1,29 @@
 import { Routes, Route } from "react-router-dom";
-import SigninForm from "./_auth/forms/SigninForm";
+
 import {
-  AllUsers,
-  CreatePost,
-  EditPost,
-  Explore,
   Home,
-  PostDetails,
-  Profile,
+  Explore,
   Saved,
+  CreatePost,
+  Profile,
+  EditPost,
+  PostDetails,
   UpdateProfile,
-} from "./_root/pages";
-import SignupForm from "./_auth/forms/SignupForm";
-import "./globals.css";
+  AllUsers,
+} from "@/_root/pages";
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
+import SignupForm from "@/_auth/forms/SignupForm";
+import SigninForm from "@/_auth/forms/SigninForm";
 import { Toaster } from "@/components/ui/toaster";
+
+import "./globals.css";
 
 const App = () => {
   return (
     <main className="flex h-screen">
       <Routes>
-        {/* public routes*/}
+        {/* public routes */}
         <Route element={<AuthLayout />}>
           <Route path="/sign-in" element={<SigninForm />} />
           <Route path="/sign-up" element={<SignupForm />} />
@@ -40,8 +42,10 @@ const App = () => {
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
         </Route>
       </Routes>
+
       <Toaster />
     </main>
   );
 };
+
 export default App;

@@ -2,7 +2,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { INavLink } from "@/types";
 import { sidebarLinks } from "@/constants";
-//import { Loader } from "@/components/shared";
+import { Loader } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { useSignOutAccount } from "@/lib/react-query/queries";
 import { useUserContext, INITIAL_USER } from "@/context/AuthContext";
@@ -37,7 +37,9 @@ const LeftSidebar = () => {
         </Link>
 
         {isLoading || !user.email ? (
-          <div className="h-14"></div>
+          <div className="h-14">
+            <Loader />
+          </div>
         ) : (
           <Link to={`/profile/${user.id}`} className="flex gap-3 items-center">
             <img

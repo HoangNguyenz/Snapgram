@@ -1,6 +1,8 @@
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Await, Link, useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+
 import {
   Form,
   FormControl,
@@ -11,14 +13,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { SignupValidation } from "@/lib/validation";
-import { z } from "zod";
 import Loader from "@/components/shared/Loader";
+import { useToast } from "@/components/ui/use-toast";
+
 import {
   useCreateUserAccount,
   useSignInAccount,
 } from "@/lib/react-query/queries";
+import { SignupValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
@@ -81,6 +83,7 @@ const SignupForm = () => {
       console.log({ error });
     }
   };
+
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">

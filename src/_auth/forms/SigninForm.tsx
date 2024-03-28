@@ -1,6 +1,8 @@
+import * as z from "zod";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+
 import {
   Form,
   FormControl,
@@ -11,10 +13,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { SigninValidation } from "@/lib/validation";
-import { z } from "zod";
 import Loader from "@/components/shared/Loader";
+import { useToast } from "@/components/ui/use-toast";
+
+import { SigninValidation } from "@/lib/validation";
 import { useSignInAccount } from "@/lib/react-query/queries";
 import { useUserContext } from "@/context/AuthContext";
 
@@ -23,10 +25,9 @@ const SigninForm = () => {
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
-  // Queries
-  const { mutateAsync: signInAccount } = useSignInAccount();
+  // Query
+  const { mutateAsync: signInAccount, isPending } = useSignInAccount();
 
-  //1.
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
     defaultValues: {
@@ -35,33 +36,28 @@ const SigninForm = () => {
     },
   });
 
-  // Handler
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    try {
-      const session = await signInAccount({
-        email: user.email,
-        password: user.password,
-      });
+    const session = await signInAccount(user);
 
-      if (!session) {
-        navigate("/");
-        return;
-      }
+    if (!session) {
+      toast({ title: "Login failed. Please try again." });
 
-      const isLoggedIn = await checkAuthUser();
+      return;
+    }
 
-      if (isLoggedIn) {
-        form.reset();
-        navigate("/");
-      } else {
-        toast({ title: "Login failed. Please try again." });
+    const isLoggedIn = await checkAuthUser();
 
-        return;
-      }
-    } catch (error) {
-      console.log({ error });
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate("/");
+    } else {
+      toast({ title: "Login failed. Please try again." });
+
+      return;
     }
   };
+
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
@@ -71,9 +67,8 @@ const SigninForm = () => {
           Log in to your account
         </h2>
         <p className="text-light-3 small-medium md:base-regular mt-2">
-          Welcome back! Please enter your details
+          Welcome back! Please enter your details.
         </p>
-
         <form
           onSubmit={form.handleSubmit(handleSignin)}
           className="flex flex-col gap-5 w-full mt-4"
@@ -107,17 +102,17 @@ const SigninForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
-            {isUserLoading ? (
+            {isPending || isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
             ) : (
-              "Sign in"
+              "Log in"
             )}
           </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
-            Dont' have an account?
+            Don't have an account?
             <Link
               to="/sign-up"
               className="text-primary-500 text-small-semibold ml-1"
